@@ -3,21 +3,22 @@ CHERI_HOME = $(HOME)/cheri
 CHERI_SDK = $(CHERI_HOME)/output/sdk
 ENV_SCRIPTS_DIR = $(CHERI_HOME)/env_scripts
 ENV_SCRIPT = $(ENV_SCRIPTS_DIR)/env.sh
+UPDATE = ""
 
+# NOTE - this will completely reinstall CHERI (removing all previous files)
 build: cheri-build
 	@echo "[+] Finished Build"
 
 cheri-build: sys-deps
 	@echo "[*] Building CHERI"
 	@if test -d ~/cheribuild; then \
-		echo -e "\t[*] Found existing cheribuild directory"; \
-	else \
-		echo -e "\t[*] Cloning git repo into $(HOME)/cheribuild"; \
-		git clone https://github.com/CTSRD-CHERI/cheribuild ~/cheribuild; \
+		rm -r ~/cheribuild; \
 	fi
 
+	git clone https://github.com/CTSRD-CHERI/cheribuild ~/cheribuild
+
 	@echo -e "\t[*] Building CHERI components - this can take a while, be patient ^^)"
-	@echd ~/cheribuild ; ./cheribuild.py llvm -d -f ; ./cheribuild.py qemu -d -f ; ./cheribuild.py disk-image -d -f
+	@cd ~/cheribuild ; y | ./cheribuild.py llvm -d -f ; ./cheribuild.py qemu -d -f ; ./cheribuild.py disk-image -d -f
 	@echo -e "[*] Configure host env vars"
 	@echo 'setenv CHERI_HOME $(HOME)/cheri' >> ~/.cshrc
 	@echo 'setenv CHERI_SDK $(CHERI_HOME)/output/sdk' >> ~/.cshrc
@@ -39,7 +40,7 @@ sys-deps:
 
 run:
 	@echo "[*] Starting CHERI-BSD in QEMU"
-	@cd ~/cheribuild ; ./cheribuild.py run
+	@cd ~/cheribuild ; n | ./cheribuild.py run
 
 clean:
 	rm -rf ~/cheribuild ~/cheri
