@@ -17,4 +17,6 @@ git clone https://github.com/nsrutherford/make-cheri.git
 cd make-cheri
 
 make build
+
+source ~/.cshrc
 ```
