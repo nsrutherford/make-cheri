@@ -12,9 +12,9 @@ This forms part of a larger documentation effort I host [here](https://nsrutherf
 Clone this repo and use `make build` to build cheri and its dependencies using cheribuild.py. Type `make run-no-update` (experimental) to run cheri-bsd (MIPS).
 
 ```bash
-git clone https://github.com/nsrutherford/cheri-make.git
+git clone https://github.com/nsrutherford/make-cheri.git
 
-cd cheri-make
+cd make-cheri
 
 make build
 ```
