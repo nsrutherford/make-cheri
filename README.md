@@ -16,6 +16,9 @@ git clone https://github.com/nsrutherford/make-cheri.git
 
 cd make-cheri
 
+# Rename the makefile for your destro
+mv Makefile-$YOUR_DISTRO Makefile
+
 make build
 
 source ~/.cshrc
