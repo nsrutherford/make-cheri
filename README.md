@@ -19,6 +19,8 @@ cd make-cheri
 # Rename the makefile for your destro
 mv Makefile-$YOUR_DISTRO Makefile
 
+# You may need to install 'make' on your system if it is not bundled -> sudo apt install make
+
 make build
 
 source ~/.cshrc
