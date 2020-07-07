@@ -1,5 +1,5 @@
-HOME = ~
-CHERI_HOME = $(HOME)/cheri
+BUILD_HOME = ${HOME}
+CHERI_HOME = $(BUILD_HOME)/cheri
 CHERI_SDK = $(CHERI_HOME)/output/sdk
 ENV_SCRIPTS_DIR = $(CHERI_HOME)/env_scripts
 ENV_SCRIPT = $(ENV_SCRIPTS_DIR)/env.sh
@@ -17,12 +17,12 @@ cheri-build: sys-deps
 		rm -r ~/cheribuild; \
 	fi
 
-	git clone https://github.com/CTSRD-CHERI/cheribuild ~/cheribuild
+	git clone https://github.com/CTSRD-CHERI/cheribuild $(BUILD_HOME)/cheribuild
 
 	@echo -e "\t[*] Building CHERI components - this can take a while, be patient ^^)"
-	@cd ~/cheribuild ; ./cheribuild.py llvm -d -f ; ./cheribuild.py qemu -d -f ; ./cheribuild.py disk-image -d -f
+	@cd $(BUILD_HOME)/cheribuild ; ./cheribuild.py llvm -d -f ; ./cheribuild.py qemu -d -f ; ./cheribuild.py disk-image -d -f
 	@echo -e "[*] Configure host env vars"
-	@echo 'export CHERI_HOME $(HOME)/cheri' >> ~/.$(SHELL)rc
+	@echo 'export CHERI_HOME $(BUILD_HOME)/cheri' >> ~/.$(SHELL)rc
 	@echo 'export CHERI_SDK $(CHERI_HOME)/output/sdk' >> ~/.$(SHELL)rc
 	@echo 'export CCFLAGS "-mabi=purecap --sysroot $(CHERI_SDK) /sysroot128 -B $(CHERI_SDK) -target mips64-unknown-freebsd13"' >> ~/.$(SHELL)rc 
 	@echo 'alias cclang $(CHERI_SDK)/bin/clang' >> ~/.$(SHELL)rc
@@ -48,8 +48,8 @@ sys-deps:
 .PHONY: run-no-update
 run-no-update:
 	@echo "[*] Starting CHERI-BSD in QEMU"
-	@cd ~/cheribuild ; ./cheribuild.py run --skip-update
+	@cd $(BUILD_HOME)/cheribuild ; ./cheribuild.py run --skip-update
 
 .PHONY: clean
 clean:
-	rm -rf ~/cheribuild ~/cheri
+	rm -rf $(BUILD_HOME)/cheribuild $(BUILD_HOME)/cheri
