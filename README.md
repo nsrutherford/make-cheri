@@ -16,6 +16,8 @@ git clone https://github.com/nsrutherford/make-cheri.git
 
 cd make-cheri
 
+# You make need to install 'make' on your system if it is not bundled -> sudo apt install make
+
 make build
 
 source ~/.cshrc
