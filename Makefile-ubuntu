@@ -16,8 +16,10 @@ cheri-build: sys-deps
 	@if test -d ~/cheribuild; then \
 		rm -r ~/cheribuild; \
 	fi
-
-	git clone https://github.com/CTSRD-CHERI/cheribuild ~/cheribuild
+	
+	mkdir cheri-src/
+	
+	git clone https://github.com/CTSRD-CHERI/cheribuild ./cheri-src/cheribuild
 
 	@echo -e "\t[*] Building CHERI components - this can take a while, be patient ^^)"
 	@cd ~/cheribuild ; ./cheribuild.py llvm -d -f ; ./cheribuild.py qemu -d -f ; ./cheribuild.py disk-image -d -f
