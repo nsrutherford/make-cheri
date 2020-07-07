@@ -1,0 +1,52 @@
+HOME = ~
+CHERI_HOME = $(HOME)/cheri
+CHERI_SDK = $(CHERI_HOME)/output/sdk
+ENV_SCRIPTS_DIR = $(CHERI_HOME)/env_scripts
+ENV_SCRIPT = $(ENV_SCRIPTS_DIR)/env.sh
+SHELL = bash
+
+# NOTE - this will completely reinstall CHERI (removing all previous files)
+.PHONY: cheri-build
+build: cheri-build
+	@echo "[+] Finished Build"
+
+.PHONY: sys-deps
+cheri-build: sys-deps
+	@echo "[*] Building CHERI"
+	@if test -d ~/cheribuild; then \
+		rm -r ~/cheribuild; \
+	fi
+
+	git clone https://github.com/CTSRD-CHERI/cheribuild ~/cheribuild
+
+	@echo -e "\t[*] Building CHERI components - this can take a while, be patient ^^)"
+	@cd ~/cheribuild ; ./cheribuild.py llvm -d -f ; ./cheribuild.py qemu -d -f ; ./cheribuild.py disk-image -d -f
+	@echo -e "[*] Configure host env vars"
+	@echo 'export CHERI_HOME $(HOME)/cheri' >> ~/.$(SHELL)rc
+	@echo 'export CHERI_SDK $(CHERI_HOME)/output/sdk' >> ~/.$(SHELL)rc
+	@echo 'export CCFLAGS "-mabi=purecap --sysroot $(CHERI_SDK) /sysroot128 -B $(CHERI_SDK) -target mips64-unknown-freebsd13"' >> ~/.$(SHELL)rc 
+	@echo 'alias cclang $(CHERI_SDK)/bin/clang' >> ~/.$(SHELL)rc
+
+	mkdir -p $(ENV_SCRIPTS_DIR)
+
+	@echo 'setenv CHERI_HOME /root/cheri' >> $(ENV_SCRIPT)
+	@echo 'qemu-mount-rootfs.sh' >> $(ENV_SCRIPT)
+	@echo 'qemu-mount-sources.sh' >> $(ENV_SCRIPT)
+
+	@echo "[+] Done building CHERI, please run 'source ~/.bashrc' to update your host configuration, and use 'make run-no-update' to start cheri-qemu"
+
+.PHONY: sys-deps
+sys-deps:
+	@echo "[*] Installing system packages"
+	sudo apt update -y
+	sudo apt install -y autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev git libncurses-dev pkg-config clang cmake ninja-build samba libarchive-dev libglib2.0-dev libpixman-1-dev bsdtar libz2-dev 
+	@echo "[+] Done installing system packages"
+
+.PHONY: run-no-update
+run-no-update:
+	@echo "[*] Starting CHERI-BSD in QEMU"
+	@cd ~/cheribuild ; ./cheribuild.py run --skip-update
+
+.PHONY: clean
+clean:
+	rm -rf ~/cheribuild ~/cheri
