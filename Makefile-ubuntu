@@ -39,7 +39,10 @@ cheri-build: sys-deps
 sys-deps:
 	@echo "[*] Installing system packages"
 	sudo apt update -y
-	sudo apt install -y autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev git libncurses-dev pkg-config clang cmake ninja-build samba libarchive-dev libglib2.0-dev libpixman-1-dev bsdtar libz2-dev 
+	sudo apt install -y autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev git libncurses-dev pkg-config clang ninja-build samba libarchive-dev libglib2.0-dev libpixman-1-dev bsdtar
+	sudo apt remove --purge cmake
+	sudo snap install cmake --classic
+
 	@echo "[+] Done installing system packages"
 
 .PHONY: run-no-update
